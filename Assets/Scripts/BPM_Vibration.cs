@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using FantomLib;
-using UnityEditor;
 
 public class BPM_Vibration : MonoBehaviour {
 

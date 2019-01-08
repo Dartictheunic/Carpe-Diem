@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEditor;
 
 public class CarpeManager : MonoBehaviour {
     [Header ("Variables à tweak")]
@@ -46,12 +45,9 @@ public class CarpeManager : MonoBehaviour {
     float speed;
 
     float actualDelta;
-    Quaternion ntm;
     float totalGyro;
-    float testAttitude;
 
     Vector3 deltaGyro;
-    Vector3 lastGyro;
 
     float nbObstacles;
     float ObstaclesPassed;
@@ -68,6 +64,7 @@ public class CarpeManager : MonoBehaviour {
         Input.gyro.enabled = true;
         totalGyro -= Input.gyro.attitude.eulerAngles.x;
         totalGyro += Input.gyro.attitude.eulerAngles.z;
+
         foreach(Obstacles obstacles in GameObject.FindObjectsOfType<Obstacles>())
         {
             nbObstacles++;
@@ -77,9 +74,6 @@ public class CarpeManager : MonoBehaviour {
 
 	void Update ()
     {
-        testAttitude = Input.gyro.attitude.w - actualDelta;
-
-        ntm = Input.gyro.attitude;
         debugText.text = Input.gyro.attitude.eulerAngles.ToString();
         debugText2.text = Input.gyro.rotationRateUnbiased.ToString();
         debugText3.text = Input.acceleration.x.ToString();
@@ -217,7 +211,6 @@ public class CarpeManager : MonoBehaviour {
         playerMusic.Play();
 
         actualDelta = Input.gyro.attitude.w;
-        lastGyro = Input.gyro.attitude.eulerAngles;
         deltaGyro = Input.gyro.attitude.eulerAngles;
     }
 

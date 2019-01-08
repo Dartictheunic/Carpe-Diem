@@ -7,6 +7,10 @@ public class Obstacles : MonoBehaviour {
     [Tooltip("De combien augmente le score quand on le passe")]
     public int ObstacleValue;
 
+
+    bool hasBeenTriggered;
+    float timeInTrigger;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -19,19 +23,33 @@ public class Obstacles : MonoBehaviour {
 
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.GetComponent<Carpe>() != null)
+        if (collision.gameObject.GetComponent<Carpe>() != null && !hasBeenTriggered)
         {
             collision.gameObject.GetComponent<Carpe>().Hurt();
             Destroy(this.GetComponent<Collider>());
+            hasBeenTriggered = true;
         }
 
     }
 
+    public void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.GetComponent<Carpe>() != null && !hasBeenTriggered)
+        {
+            timeInTrigger += Time.deltaTime;
+            if (timeInTrigger > .25f)
+            {
+                other.gameObject.GetComponent<Carpe>().carpeManager.IncreaseScore(1);
+                timeInTrigger = 0;
+            }
+        }
+    }
+
     public void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<Carpe>() != null)
+        if (other.gameObject.GetComponent<Carpe>() != null && !hasBeenTriggered)
         {
-            other.gameObject.GetComponent<Carpe>().carpeManager.IncreaseScore(ObstacleValue);
+            other.gameObject.GetComponent<Carpe>().carpeManager.ObstaclePassed(ObstacleValue);
         }
     }
 }
