@@ -67,7 +67,9 @@ public class Carpe : MonoBehaviour {
     [Space(20)]
     [Header("Trucs à link manuellement")]
     public CarpeManager carpeManager;
-    public MeshRenderer[] matsArray;
+    public Animator carpeAnimator;
+    public SkinnedMeshRenderer carpeMesh;
+
     [Space(10)]
     [Header("Variables pour la prog")]
     public bool canJump;
@@ -83,6 +85,7 @@ public class Carpe : MonoBehaviour {
     Rigidbody body;
     Material mat;
     Vector3 hurtPos;
+    List<Material> carpeMats;
 
     Vector3 basePos;
 
@@ -98,12 +101,17 @@ public class Carpe : MonoBehaviour {
     }
 
     private void Start()
-    { 
+    {
+        carpeMats = new List<Material>();
         invisibilityBlink = DOTween.Sequence();
         body = GetComponent<Rigidbody>();
         mat = GetComponent<MeshRenderer>().material;
         basePos = transform.localPosition;
         int numOfChildren = transform.childCount;
+        for (int i = 0; i < carpeMesh.materials.Length; i++)
+        {
+            carpeMats.Add(carpeMesh.materials[i]);
+        }
     }
 
     public void Jump()
@@ -112,8 +120,10 @@ public class Carpe : MonoBehaviour {
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+            if (Physics.Raycast(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward), out hit, 20f))
             {
+                Debug.DrawLine(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward) * 150, Color.red, 5f );
+                    Debug.Log(hit.distance);
                 if (hit.collider.GetComponent<Obstacles>() != null && hit.distance < styleDetectionDistance)
                 {
                     carpeManager.ObstaclePassed(hit.collider.GetComponent<Obstacles>().ObstacleValue);
@@ -121,6 +131,8 @@ public class Carpe : MonoBehaviour {
                 }
 
             }
+
+            carpeAnimator.SetTrigger("Jump");
 
             carpeState = CarpeState.startJump;
         }
@@ -149,10 +161,10 @@ public class Carpe : MonoBehaviour {
     
             carpeManager.UpdateMultiplier(false);
             
-            foreach(MeshRenderer meeesh in matsArray)
+            foreach(Material meeesh in carpeMats)
             {
-                invisibilityBlink.Append(meeesh.material.DOFade(minimumAlpha, "_Color", invicibilityTime/6).SetLoops(6, LoopType.Yoyo));
-                invisibilityBlink.Append(meeesh.material.DOColor(meeesh.material.color, .1f));
+                invisibilityBlink.Append(meeesh.DOFade(minimumAlpha, "_Color", invicibilityTime/6).SetLoops(6, LoopType.Yoyo));
+                invisibilityBlink.Append(meeesh.DOColor(meeesh.color, .1f));
             }
             carpeState = CarpeState.hurt;
             canBeHurt = false;
@@ -242,11 +254,6 @@ public class Carpe : MonoBehaviour {
         }
     }
 
-    private void Update()
-    {
-
-    }
-
     public bool FastApproximately(float a, float b)
     {
         return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= .1f;
@@ -255,7 +262,7 @@ public class Carpe : MonoBehaviour {
 
     public bool FastApproximatelyPrecise(float a, float b)
     {
-        return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= .01f;
+        return ((a - b) < 0 ? ((a - b) * -1) : (a - b)) <= .025f;
     }
 
     public enum CarpeState

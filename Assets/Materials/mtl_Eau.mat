@@ -88,7 +88,7 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _WaterContrast: 0
-    - _WaterDepth: 0.75
+    - _WaterDepth: 0.067
     - _WaterSpeed: 0.36
     - _WaterTile: 10
     - _WaveHeight: 0.1

@@ -1,0 +1,5 @@
+Obstacle = Truc où il faut sauter
+Bordure = Truc où il faut tourner
+
+Long = Prend toute la rangée
+Court = Prend une partie de la rangée
