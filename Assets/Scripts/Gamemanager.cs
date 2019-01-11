@@ -21,6 +21,11 @@ public class Gamemanager : MonoBehaviour {
 
     void Awake()
     {
+#if !UNITY_EDITOR
+        Screen.orientation = ScreenOrientation.Portrait;
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 60;
+#endif
         DontDestroyOnLoad(this.gameObject);
         gamemanager = this;
 

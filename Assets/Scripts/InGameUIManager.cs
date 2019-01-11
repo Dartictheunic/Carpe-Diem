@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class tamer : MonoBehaviour {
-    bool tamerlaput;
+
+public class InGameUIManager : MonoBehaviour {
+
+    bool isGamePaused;
     public AudioSource music;
+    public GameObject pauseItem;
 	// Use this for initialization
 	void Start () {
 		
@@ -20,20 +23,32 @@ public class tamer : MonoBehaviour {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
+    public void Menu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void PlayPause()
     {
-        if (!tamerlaput)
+        if (!isGamePaused)
         {
-        Time.timeScale = 0f;
+            pauseItem.SetActive(true);
+            Time.timeScale = 0f;
             music.Pause();
-            tamerlaput = true;
+            isGamePaused = true;
         }
 
         else
         {
-        Time.timeScale = 1f;
+            Time.timeScale = 1f;
+            pauseItem.SetActive(false);
             music.UnPause();
-            tamerlaput = false;
+            isGamePaused = false;
         }
     }
 }

@@ -155,7 +155,7 @@ public class Carpe : MonoBehaviour {
         if (canBeHurt)
         {
             #if !UNITY_EDITOR
-                AndroidPlugin.StartVibrator(60);
+                AndroidPlugin.StartVibrator(180);
             #endif
     
             carpeManager.UpdateMultiplier(false);
@@ -232,21 +232,22 @@ public class Carpe : MonoBehaviour {
                         if (FastApproximatelyPrecise(transform.localPosition.z, 0))
                             {
                                 carpeState = CarpeState.floating;
-                            }
-                        }
+                            canBeHurt = true;
+
+                    }
+                }
                         break;
         }
 
         
-        if (invincibilityLeft > 0)
-        {
-            invincibilityLeft -= Time.deltaTime;
-        }
+        //if (invincibilityLeft > 0)
+        //{
+        //    invincibilityLeft -= Time.deltaTime;
+        //}
 
-        else
-        {
-            canBeHurt = true;
-        }
+        //else
+        //{
+        //}
 
         if (body.velocity != Vector3.zero)
         {

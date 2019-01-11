@@ -258,14 +258,18 @@ public class CarpeManager : MonoBehaviour {
 
     public void IncreaseStyle(int increase)
     {
-        styleInt += increase;
-        if (styleInt >= 100)
+        if (multiplier < maximumMultiplier)
         {
-            styleInt = 0f;
-            UpdateMultiplier(true);
-        }
+            styleInt += increase / (multiplier * 2);
 
-        styleImage.fillAmount = styleInt / 100;
+            if (styleInt >= 100)
+            {
+                styleInt = 0f;
+                UpdateMultiplier(true);
+            }
+
+            styleImage.fillAmount = styleInt / 100;
+        }
     }
 
     public bool FastApproximately(float a, float b)
