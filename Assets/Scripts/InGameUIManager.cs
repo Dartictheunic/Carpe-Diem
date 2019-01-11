@@ -20,6 +20,7 @@ public class InGameUIManager : MonoBehaviour {
 
     public void Reset()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -30,6 +31,7 @@ public class InGameUIManager : MonoBehaviour {
 
     public void Menu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
 
