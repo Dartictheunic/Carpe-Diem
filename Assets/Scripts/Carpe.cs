@@ -96,7 +96,6 @@ public class Carpe : MonoBehaviour {
 
     public void MoveIn()
     {
-        Debug.Log(name);
         transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(basePos.x, transform.localPosition.y, transform.localPosition.z), moveSpeed);
     }
 
@@ -123,7 +122,6 @@ public class Carpe : MonoBehaviour {
             if (Physics.Raycast(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward), out hit, 20f))
             {
                 Debug.DrawLine(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward) * 150, Color.red, 5f );
-                    Debug.Log(hit.distance);
                 if (hit.collider.GetComponent<Obstacles>() != null && hit.distance < styleDetectionDistance)
                 {
                     carpeManager.ObstaclePassed(hit.collider.GetComponent<Obstacles>().ObstacleValue);
@@ -133,6 +131,7 @@ public class Carpe : MonoBehaviour {
             }
 
             carpeAnimator.SetTrigger("Jump");
+            carpeAnimator.SetBool("Start", true);
 
             carpeState = CarpeState.startJump;
         }
@@ -189,9 +188,10 @@ public class Carpe : MonoBehaviour {
                         transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, jumpHeight, transform.localPosition.z), jumpSpeed);
                         if (FastApproximately(transform.localPosition.y, jumpHeight))
                         {
-                            carpeState = CarpeState.endJump;
+                           carpeState = CarpeState.endJump;
+                           carpeAnimator.SetBool("Start", false);
                         }
-                    }
+                }
                     break;
 
                 case CarpeState.endJump:
