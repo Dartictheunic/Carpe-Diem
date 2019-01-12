@@ -18,7 +18,7 @@ public class Obstacles : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        transform.position += new Vector3(0, (Mathf.Sin(Time.time*3)/75) * Time.deltaTime, 0);
 	}
 
     public void OnCollisionEnter(Collision collision)

@@ -85,7 +85,9 @@ public class Carpe : MonoBehaviour {
     Rigidbody body;
     Material mat;
     Vector3 hurtPos;
+    [SerializeField]
     List<Material> carpeMats;
+    List<Color> carpeColors;
 
     Vector3 basePos;
 
@@ -99,14 +101,42 @@ public class Carpe : MonoBehaviour {
         transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(basePos.x, transform.localPosition.y, transform.localPosition.z), moveSpeed);
     }
 
+    public void Win()
+    {
+        carpeAnimator.SetTrigger("Win");
+    }
+
     private void Start()
     {
+        canJump = true;
         carpeMats = new List<Material>();
+        carpeColors = new List<Color>();
         invisibilityBlink = DOTween.Sequence();
         body = GetComponent<Rigidbody>();
-        mat = GetComponent<MeshRenderer>().material;
         basePos = transform.localPosition;
+        hurtPos.z = transform.localPosition.z - hurtForce;
+
         int numOfChildren = transform.childCount;
+        for (int i = 0; i < carpeMesh.materials.Length; i++)
+        {
+            carpeMats.Add(carpeMesh.materials[i]);
+        }
+
+        foreach (Material meeesh in carpeMats)
+        {
+            carpeColors.Add(meeesh.color);
+        }
+
+        int t = 0;
+
+        foreach (Material meeesh in carpeMats)
+        {
+            meeesh.DOColor(carpeColors[t], .1f);
+            t++;
+        }
+
+        carpeMats.Clear();
+
         for (int i = 0; i < carpeMesh.materials.Length; i++)
         {
             carpeMats.Add(carpeMesh.materials[i]);
@@ -115,8 +145,9 @@ public class Carpe : MonoBehaviour {
 
     public void Jump()
     {
-        if (carpeState == CarpeState.floating || carpeState == CarpeState.recovering)
+        if (canJump)
         {
+
             RaycastHit hit;
 
             if (Physics.Raycast(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward), out hit, 20f))
@@ -130,10 +161,14 @@ public class Carpe : MonoBehaviour {
 
             }
 
-            carpeAnimator.SetTrigger("Jump");
             carpeAnimator.SetBool("Start", true);
 
             carpeState = CarpeState.startJump;
+            canJump = false;
+
+#if !UNITY_EDITOR
+                AndroidPlugin.StartVibrator(180);
+#endif
         }
 
         //else if (carpeState == CarpeState.endJump || carpeState == CarpeState.startJump)
@@ -157,23 +192,24 @@ public class Carpe : MonoBehaviour {
             #if !UNITY_EDITOR
                 AndroidPlugin.StartVibrator(180);
             #endif
+            carpeAnimator.SetTrigger("Hit");
     
             carpeManager.UpdateMultiplier(false);
-            
+
             foreach(Material meeesh in carpeMats)
             {
-                invisibilityBlink.Append(meeesh.DOFade(minimumAlpha, "_Color", invicibilityTime/6).SetLoops(6, LoopType.Yoyo));
-                invisibilityBlink.Append(meeesh.DOColor(meeesh.color, .1f));
+                meeesh.DOColor(Color.white, invicibilityTime/6).SetLoops(-1, LoopType.Yoyo);
             }
+
             carpeState = CarpeState.hurt;
             canBeHurt = false;
             invincibilityLeft = invicibilityTime;
             body.velocity = Vector3.zero;
-            hurtPos.z = transform.localPosition.z - hurtForce;
         }
         
     }
-	
+
+
 	void FixedUpdate () {
             switch(carpeState)
             {
@@ -201,6 +237,7 @@ public class Carpe : MonoBehaviour {
                         {
                             canJump = true;
                             carpeState = CarpeState.floating;
+                        carpeAnimator.SetTrigger("EndJump");
                         }
                     }
                     break;
@@ -227,27 +264,39 @@ public class Carpe : MonoBehaviour {
                     break;
 
                 case CarpeState.recovering:
-                        {
-                        transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, transform.localPosition.y, 0), recoverySpeed);
+                    {
+                    if (carpeAnimator.GetBool("Recovering") == false)
+                    carpeAnimator.SetBool("Recovering", true);
+
+                    transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, transform.localPosition.y, 0), recoverySpeed);
                         if (FastApproximatelyPrecise(transform.localPosition.z, 0))
                             {
+                                carpeAnimator.SetBool("Recovering", false);
                                 carpeState = CarpeState.floating;
-                            canBeHurt = true;
-
+                            }
                     }
-                }
-                        break;
+                    break;
         }
 
-        
-        //if (invincibilityLeft > 0)
-        //{
-        //    invincibilityLeft -= Time.deltaTime;
-        //}
 
-        //else
-        //{
-        //}
+        if (invincibilityLeft > 0)
+        {
+            invincibilityLeft -= Time.deltaTime;
+        }
+
+        else if (invincibilityLeft <= 0 && !canBeHurt)
+        {
+                int i = 0;
+                canBeHurt = true;
+            foreach (Material meeesh in carpeMats)
+            {
+                meeesh.DOKill();
+                meeesh.DOColor(carpeColors[i], .1f);
+                carpeAnimator.SetBool("Recovering", false);
+                i++;
+
+            }
+        }
 
         if (body.velocity != Vector3.zero)
         {

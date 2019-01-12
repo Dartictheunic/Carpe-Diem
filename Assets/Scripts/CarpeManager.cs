@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class CarpeManager : MonoBehaviour {
     [Header ("Variables à tweak")]
@@ -20,7 +21,8 @@ public class CarpeManager : MonoBehaviour {
     public int maximumMultiplier;
     [Tooltip("Couleurs du multiplicateur")]
     public Color[] multiplierColors;
-
+    [Tooltip("Quand la map est finie")]
+    public float positionWin;
 
     [Space(10)]
     [Header("Liens à faire")]
@@ -30,10 +32,16 @@ public class CarpeManager : MonoBehaviour {
     public Carpe rightCarpe;
     public ScoreManager scoreText;
     public ScoreManager multiplierText;
-    public Text debugText;
-    public Text debugText2;
-    public Text debugText3;
     public Image styleImage;
+    public Animator cameraAnimator;
+    public TMPro.TextMeshProUGUI highscoreString;
+    public TMPro.TextMeshProUGUI percentageString;
+    public TMPro.TextMeshProUGUI rankString;
+    public TMPro.TextMeshProUGUI scoreString;
+    public GameObject newHighscore;
+    public GameObject winScreen;
+
+
 
     [Space(10)]
     [Header("Variables prog")]
@@ -52,6 +60,54 @@ public class CarpeManager : MonoBehaviour {
     float nbObstacles;
     float ObstaclesPassed;
     float percentageOfObstaclesPassed;
+    bool end;
+
+
+    public void End()
+    {
+        end = true;
+        cameraAnimator.SetTrigger("Victory");
+        leftCarpe.Win();
+        rightCarpe.Win();
+        winScreen.SetActive(true);
+        var lastHighscore = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name);
+        if (scoreFloat > lastHighscore)
+        {
+            PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, scoreFloat);
+            PlayerPrefs.Save();
+            newHighscore.SetActive(true);
+        }
+
+        highscoreString.SetText(PlayerPrefs.GetInt(SceneManager.GetActiveScene().name).ToString());
+        scoreString.SetText(scoreFloat.ToString());
+        percentageString.SetText(percentageOfObstaclesPassed.ToString());
+
+        if (percentageOfObstaclesPassed == 100)
+        {
+            rankString.SetText("S");
+        }
+
+        else if (percentageOfObstaclesPassed > 90)
+        {
+            rankString.SetText("A");
+        }
+
+        else if (percentageOfObstaclesPassed > 75)
+        {
+            rankString.SetText("B");
+        }
+
+        else if (percentageOfObstaclesPassed > 50)
+        {
+            rankString.SetText("C");
+        }
+
+
+        else if (percentageOfObstaclesPassed <= 50)
+        {
+            rankString.SetText("Nul");
+        }
+    }
 
     void Start ()
     {
@@ -74,9 +130,10 @@ public class CarpeManager : MonoBehaviour {
 
 	void Update ()
     {
-        debugText.text = Input.gyro.attitude.eulerAngles.ToString();
-        debugText2.text = Input.gyro.rotationRateUnbiased.ToString();
-        debugText3.text = Input.acceleration.x.ToString();
+        if (transform.position.z > positionWin && !end)
+        {
+            End();
+        }
 
         deltaGyro += Input.gyro.rotationRate;
 
@@ -228,14 +285,13 @@ public class CarpeManager : MonoBehaviour {
     {
         scoreFloat += increase * multiplier;
         scoreText.UpdateScore(scoreFloat);
-        scoreText.UpdateColor(scoreText.text.color = new Color(scoreText.text.color.r, 1 - percentageOfObstaclesPassed, scoreText.text.color.b, scoreText.text.color.a));
+        scoreText.UpdateColor(scoreText.text.color = new Color(scoreText.text.color.r, 1 - (percentageOfObstaclesPassed/100), scoreText.text.color.b, scoreText.text.color.a));
     }
 
     public void ObstaclePassed(int obstacleValue)
     {
         ObstaclesPassed++;
-        percentageOfObstaclesPassed = ObstaclesPassed / nbObstacles;
-        Debug.Log("Obstacles passed : " + ObstaclesPassed + "Number of obstacles : " + nbObstacles + "Percentage : " + percentageOfObstaclesPassed);
+        percentageOfObstaclesPassed = (ObstaclesPassed / nbObstacles) * 100;
         IncreaseStyle(obstacleValue);
     }
 
@@ -253,6 +309,8 @@ public class CarpeManager : MonoBehaviour {
             multiplier = 1;
             multiplierText.UpdateMultiplier(multiplier);
             multiplierText.UpdateColor(multiplierColors[multiplier - 1]);
+            styleInt = 0;
+            IncreaseStyle(0);
         }
     }
 

@@ -72,8 +72,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _Dist: 25
     - _DstBlend: 10
-    - _FoamTileX: 0.5
-    - _FoamTileY: 0.5
+    - _FoamTileX: 0.048
+    - _FoamTileY: 0.09
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1

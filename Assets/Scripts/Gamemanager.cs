@@ -19,6 +19,11 @@ public class Gamemanager : MonoBehaviour {
 
     public GameObject[] allMenuItemsArray;
 
+    public void Quit()
+    {
+        Application.Quit();
+    }
+
     void Awake()
     {
 #if !UNITY_EDITOR
