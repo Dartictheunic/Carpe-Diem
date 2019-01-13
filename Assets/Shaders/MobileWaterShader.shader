@@ -20,8 +20,8 @@ Shader "Custom/Water/MobileWater" {
 		_OceanDepth("Ocean Depth", COLOR) = (0.25098, 0.50980, 0.92549, 1)
 		_IslandMask("Island Mask", 2D) = "white" {}
 	_FoamDiffuse("Foam texture", 2D) = "white" {}
-	_FoamTileX("Foam Tile X", Range(0, 2.0)) = 0.5
-		_FoamTileY("Foam Tile Y", Range(0, 2.0)) = 0.5
+	_FoamTileX("Foam Tile X", Range(0, 20.0)) = 0.5
+		_FoamTileY("Foam Tile Y", Range(0, 20.0)) = 0.5
 
 	}
 		SubShader{

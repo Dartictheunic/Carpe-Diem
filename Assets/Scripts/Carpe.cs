@@ -69,6 +69,15 @@ public class Carpe : MonoBehaviour {
     public CarpeManager carpeManager;
     public Animator carpeAnimator;
     public SkinnedMeshRenderer carpeMesh;
+    public ParticleSystem jumpParticles;
+    public ParticleSystem ploufParticles;
+    public ParticleSystem aieParticles;
+    public AudioSource whooshSource;
+    public AudioSource hurtSource;
+    public AudioSource ploufSource;
+    public AudioClip[] whooshSounds;
+    public AudioClip[] hurtSounds;
+    public AudioClip[] ploufSounds;
 
     [Space(10)]
     [Header("Variables pour la prog")]
@@ -89,6 +98,7 @@ public class Carpe : MonoBehaviour {
     List<Material> carpeMats;
     List<Color> carpeColors;
 
+    bool won;
     Vector3 basePos;
 
     public void MoveOut(float xDestination)
@@ -104,6 +114,7 @@ public class Carpe : MonoBehaviour {
     public void Win()
     {
         carpeAnimator.SetTrigger("Win");
+        won = true;
     }
 
     private void Start()
@@ -147,7 +158,8 @@ public class Carpe : MonoBehaviour {
     {
         if (canJump)
         {
-
+            jumpParticles.Play(true);
+            whooshSource.PlayOneShot(whooshSounds[Random.Range(0, whooshSounds.Length- 1)]);
             RaycastHit hit;
 
             if (Physics.Raycast(new Vector3(transform.position.x, 0, transform.position.z), transform.TransformDirection(Vector3.forward), out hit, 20f))
@@ -167,7 +179,7 @@ public class Carpe : MonoBehaviour {
             canJump = false;
 
 #if !UNITY_EDITOR
-                AndroidPlugin.StartVibrator(180);
+                AndroidPlugin.StartVibrator(60);
 #endif
         }
 
@@ -193,7 +205,9 @@ public class Carpe : MonoBehaviour {
                 AndroidPlugin.StartVibrator(180);
             #endif
             carpeAnimator.SetTrigger("Hit");
-    
+            carpeAnimator.SetBool("Recovering", true);
+            hurtSource.PlayOneShot(hurtSounds[Random.Range(0, hurtSounds.Length - 1)]);
+
             carpeManager.UpdateMultiplier(false);
 
             foreach(Material meeesh in carpeMats)
@@ -205,19 +219,28 @@ public class Carpe : MonoBehaviour {
             canBeHurt = false;
             invincibilityLeft = invicibilityTime;
             body.velocity = Vector3.zero;
+            aieParticles.Play(true);
         }
         
     }
 
 
 	void FixedUpdate () {
+
+
             switch(carpeState)
             {
                 case CarpeState.floating:
                     {
+                    if(!canJump)
+                    {
+                        canJump = true;
+                    }
                         transform.localPosition = Vector3.LerpUnclamped(transform.localPosition, new Vector3(transform.localPosition.x, 0, 0), recoverySpeed);
                     }
                     break;
+
+
 
                 case CarpeState.startJump:
                     {
@@ -225,9 +248,10 @@ public class Carpe : MonoBehaviour {
                         if (FastApproximately(transform.localPosition.y, jumpHeight))
                         {
                            carpeState = CarpeState.endJump;
+                           ploufParticles.Play(true);
                            carpeAnimator.SetBool("Start", false);
                         }
-                }
+                    }
                     break;
 
                 case CarpeState.endJump:
@@ -237,7 +261,7 @@ public class Carpe : MonoBehaviour {
                         {
                             canJump = true;
                             carpeState = CarpeState.floating;
-                        carpeAnimator.SetTrigger("EndJump");
+                            ploufSource.PlayOneShot(ploufSounds[Random.Range(0, ploufSounds.Length - 1)]);
                         }
                     }
                     break;
@@ -254,7 +278,7 @@ public class Carpe : MonoBehaviour {
 
                 case CarpeState.hurt:
                     {
-                        transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, transform.localPosition.y, hurtPos.z), hurtSpeed);
+                        transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, 0, hurtPos.z), hurtSpeed);
                         if (FastApproximatelyPrecise(transform.localPosition.z, -hurtForce))
                         {
                             carpeState = CarpeState.recovering;
@@ -265,10 +289,11 @@ public class Carpe : MonoBehaviour {
 
                 case CarpeState.recovering:
                     {
-                    if (carpeAnimator.GetBool("Recovering") == false)
-                    carpeAnimator.SetBool("Recovering", true);
-
-                    transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, transform.localPosition.y, 0), recoverySpeed);
+                    if (!canJump)
+                    {
+                        canJump = true;
+                    }
+                    transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(transform.localPosition.x, 0, 0), recoverySpeed);
                         if (FastApproximatelyPrecise(transform.localPosition.z, 0))
                             {
                                 carpeAnimator.SetBool("Recovering", false);
@@ -286,15 +311,14 @@ public class Carpe : MonoBehaviour {
 
         else if (invincibilityLeft <= 0 && !canBeHurt)
         {
-                int i = 0;
-                canBeHurt = true;
+            int i = 0;
+            canBeHurt = true;
             foreach (Material meeesh in carpeMats)
             {
                 meeesh.DOKill();
                 meeesh.DOColor(carpeColors[i], .1f);
                 carpeAnimator.SetBool("Recovering", false);
                 i++;
-
             }
         }
 

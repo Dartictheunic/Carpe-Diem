@@ -35,7 +35,6 @@ public class CarpeManager : MonoBehaviour {
     public Image styleImage;
     public Animator cameraAnimator;
     public TMPro.TextMeshProUGUI highscoreString;
-    public TMPro.TextMeshProUGUI percentageString;
     public TMPro.TextMeshProUGUI rankString;
     public TMPro.TextMeshProUGUI scoreString;
     public GameObject newHighscore;
@@ -80,7 +79,6 @@ public class CarpeManager : MonoBehaviour {
 
         highscoreString.SetText(PlayerPrefs.GetInt(SceneManager.GetActiveScene().name).ToString());
         scoreString.SetText(scoreFloat.ToString());
-        percentageString.SetText(percentageOfObstaclesPassed.ToString());
 
         if (percentageOfObstaclesPassed == 100)
         {
