@@ -69,8 +69,18 @@ public class CarpeManager : MonoBehaviour {
         leftCarpe.Win();
         rightCarpe.Win();
         winScreen.SetActive(true);
-        var lastHighscore = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name);
-        if (scoreFloat > lastHighscore)
+        if (PlayerPrefs.HasKey(SceneManager.GetActiveScene().name))
+        {
+            var lastHighscore = PlayerPrefs.GetInt(SceneManager.GetActiveScene().name);
+            if (scoreFloat > lastHighscore)
+            {
+                PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, scoreFloat);
+                PlayerPrefs.Save();
+                newHighscore.SetActive(true);
+            }
+        }
+
+        else
         {
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, scoreFloat);
             PlayerPrefs.Save();
