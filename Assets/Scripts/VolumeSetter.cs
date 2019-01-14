@@ -7,6 +7,7 @@ public class VolumeSetter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        if (Gamemanager.gamemanager != null)
         GetComponent<AudioSource>().volume = Gamemanager.gamemanager.volume;
 	}
 	

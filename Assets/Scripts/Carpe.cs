@@ -98,7 +98,6 @@ public class Carpe : MonoBehaviour {
     List<Material> carpeMats;
     List<Color> carpeColors;
 
-    bool won;
     Vector3 basePos;
 
     public void MoveOut(float xDestination)
@@ -114,7 +113,7 @@ public class Carpe : MonoBehaviour {
     public void Win()
     {
         carpeAnimator.SetTrigger("Win");
-        won = true;
+        canJump = false;
     }
 
     private void Start()

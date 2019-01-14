@@ -14,7 +14,7 @@ public class Gamemanager : MonoBehaviour {
     public int difficulty;
     public float volume;
 
-    public Dropdown difficultyDropdown;
+    public TMPro.TMP_Dropdown difficultyDropdown;
     public Slider volumeSlider;
 
     public GameObject[] allMenuItemsArray;
