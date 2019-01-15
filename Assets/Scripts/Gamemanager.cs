@@ -26,6 +26,11 @@ public class Gamemanager : MonoBehaviour {
         Application.Quit();
     }
 
+    public void DestroyThisInstance()
+    {
+        Destroy(this.gameObject);
+    }
+
     void Awake()
     {
 #if !UNITY_EDITOR
@@ -82,7 +87,7 @@ public class Gamemanager : MonoBehaviour {
 
         if (PlayerPrefs.HasKey("Level 2") && PlayerPrefs.HasKey("Level 2Player"))
         {
-            level1Highscore.SetText("Highscore : " + PlayerPrefs.GetInt("Level 2").ToString() + "\nBy : " + PlayerPrefs.GetString("Level 2Player"));
+            level2Highscore.SetText("Highscore : " + PlayerPrefs.GetInt("Level 2").ToString() + "\nBy : " + PlayerPrefs.GetString("Level 2Player"));
         }
 
     }

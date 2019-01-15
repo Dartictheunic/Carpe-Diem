@@ -32,6 +32,7 @@ public class InGameUIManager : MonoBehaviour {
     public void Menu()
     {
         Time.timeScale = 1f;
+        Gamemanager.gamemanager.DestroyThisInstance();
         SceneManager.LoadScene(0);
     }
 

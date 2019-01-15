@@ -165,6 +165,9 @@ public class CarpeManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.C))
             PlayerPrefs.DeleteAll();
 
+        if (Input.GetKeyDown(KeyCode.W))
+            Debug.Log(PlayerPrefs.GetString("Level 2Player"));
+
         if (Input.GetKeyDown(KeyCode.LeftArrow))
             leftCarpe.Jump();
 
