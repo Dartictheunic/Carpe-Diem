@@ -88,7 +88,6 @@ public class Carpe : MonoBehaviour {
     public bool isRecovering;
     public CarpeState carpeState;
 
-    Sequence invisibilityBlink;
     bool isMaterialBlinking;
     float invincibilityLeft;
     Rigidbody body;
@@ -122,7 +121,6 @@ public class Carpe : MonoBehaviour {
         canJump = true;
         carpeMats = new List<Material>();
         carpeColors = new List<Color>();
-        invisibilityBlink = DOTween.Sequence();
         body = GetComponent<Rigidbody>();
         basePos = transform.localPosition;
         hurtPos.z = transform.localPosition.z - hurtForce;

@@ -52,7 +52,7 @@ public class CarpeManager : MonoBehaviour {
 
     float speed;
 
-    float actualDelta;
+
     float totalGyro;
 
     Vector3 deltaGyro;
@@ -293,7 +293,6 @@ public class CarpeManager : MonoBehaviour {
         mainMusic.Play();
         playerMusic.Play();
 
-        actualDelta = Input.gyro.attitude.w;
         deltaGyro = Input.gyro.attitude.eulerAngles;
     }
 
