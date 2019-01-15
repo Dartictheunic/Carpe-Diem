@@ -78,6 +78,7 @@ public class Carpe : MonoBehaviour {
     public AudioClip[] whooshSounds;
     public AudioClip[] hurtSounds;
     public AudioClip[] slideSounds;
+    public TrailRenderer carpeTrail;
 
     [Space(10)]
     [Header("Variables pour la prog")]
@@ -237,6 +238,15 @@ public class Carpe : MonoBehaviour {
             slideSource.Stop();
         }
 
+        if (FastApproximately(transform.position.y, 0))
+        {
+            carpeTrail.enabled = true;
+        }
+
+        else
+        {
+            carpeTrail.enabled = false;
+        }
 
         switch (carpeState)
             {
