@@ -15,6 +15,8 @@ public class Gamemanager : MonoBehaviour {
     public float volume;
 
     public TMPro.TMP_Dropdown difficultyDropdown;
+    public TMPro.TextMeshProUGUI level1Highscore;
+    public TMPro.TextMeshProUGUI level2Highscore;
     public Slider volumeSlider;
 
     public GameObject[] allMenuItemsArray;
@@ -71,6 +73,16 @@ public class Gamemanager : MonoBehaviour {
             volume = 1;
             volumeSlider.value = volume;
             SavePlayerPrefs();
+        }
+
+        if (PlayerPrefs.HasKey("Level 1") && PlayerPrefs.HasKey("Level 1Player"))
+        {
+            level1Highscore.SetText("Highscore : " + PlayerPrefs.GetInt("Level 1").ToString() + "\nBy : " + PlayerPrefs.GetString("Level 1Player"));
+        }
+
+        if (PlayerPrefs.HasKey("Level 2") && PlayerPrefs.HasKey("Level 2Player"))
+        {
+            level1Highscore.SetText("Highscore : " + PlayerPrefs.GetInt("Level 2").ToString() + "\nBy : " + PlayerPrefs.GetString("Level 2Player"));
         }
 
     }

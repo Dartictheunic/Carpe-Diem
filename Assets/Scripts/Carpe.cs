@@ -74,10 +74,10 @@ public class Carpe : MonoBehaviour {
     public ParticleSystem aieParticles;
     public AudioSource whooshSource;
     public AudioSource hurtSource;
-    public AudioSource ploufSource;
+    public AudioSource slideSource;
     public AudioClip[] whooshSounds;
     public AudioClip[] hurtSounds;
-    public AudioClip[] ploufSounds;
+    public AudioClip[] slideSounds;
 
     [Space(10)]
     [Header("Variables pour la prog")]
@@ -99,6 +99,7 @@ public class Carpe : MonoBehaviour {
     List<Color> carpeColors;
 
     Vector3 basePos;
+    float posDelta;
 
     public void MoveOut(float xDestination)
     {
@@ -224,10 +225,22 @@ public class Carpe : MonoBehaviour {
     }
 
 
-	void FixedUpdate () {
+	void FixedUpdate ()
+    {
+        var xChange = transform.position.x - posDelta;
+
+        if (xChange != 0 && !slideSource.isPlaying && Mathf.Abs(xChange) > .01f)
+        {
+            slideSource.PlayOneShot(slideSounds[Random.Range(0, slideSounds.Length - 1)]);
+        }
+
+        else if (xChange == 0 && slideSource.isPlaying)
+        {
+            slideSource.Stop();
+        }
 
 
-            switch(carpeState)
+        switch (carpeState)
             {
                 case CarpeState.floating:
                     {
@@ -260,7 +273,6 @@ public class Carpe : MonoBehaviour {
                         {
                             canJump = true;
                             carpeState = CarpeState.floating;
-                            ploufSource.PlayOneShot(ploufSounds[Random.Range(0, ploufSounds.Length - 1)]);
                         }
                     }
                     break;
@@ -300,8 +312,9 @@ public class Carpe : MonoBehaviour {
                             }
                     }
                     break;
-        }
+            }
 
+        posDelta = transform.position.x;
 
         if (invincibilityLeft > 0)
         {

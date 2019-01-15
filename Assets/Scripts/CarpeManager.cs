@@ -39,6 +39,7 @@ public class CarpeManager : MonoBehaviour {
     public TMPro.TextMeshProUGUI scoreString;
     public GameObject newHighscore;
     public GameObject winScreen;
+    public GameObject tapToExit;
 
 
 
@@ -62,6 +63,11 @@ public class CarpeManager : MonoBehaviour {
     bool end;
     int difficultyManager;
 
+    public void SubmitHighScore(string playerName)
+    {
+        PlayerPrefs.SetString(SceneManager.GetActiveScene().name + "Player", playerName);
+        PlayerPrefs.Save();
+    }
 
     public void End()
     {
@@ -78,6 +84,7 @@ public class CarpeManager : MonoBehaviour {
                 PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, scoreFloat);
                 PlayerPrefs.Save();
                 newHighscore.SetActive(true);
+                tapToExit.SetActive(false);
             }
         }
 
@@ -85,6 +92,7 @@ public class CarpeManager : MonoBehaviour {
         {
             PlayerPrefs.SetInt(SceneManager.GetActiveScene().name, scoreFloat);
             PlayerPrefs.Save();
+            tapToExit.SetActive(false);
             newHighscore.SetActive(true);
         }
 
@@ -124,6 +132,7 @@ public class CarpeManager : MonoBehaviour {
         Screen.orientation = ScreenOrientation.Portrait;
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
+        difficultyManager = Gamemanager.gamemanager.difficulty + 1;
 #endif
         speed = bpm / 60;
         Input.gyro.enabled = true;
@@ -134,8 +143,11 @@ public class CarpeManager : MonoBehaviour {
         {
             nbObstacles++;
         }
-        
-        difficultyManager = Gamemanager.gamemanager.difficulty + 1;
+
+#if UNITY_EDITOR
+        difficultyManager = 2;
+#endif
+
     }
 
 
@@ -151,7 +163,7 @@ public class CarpeManager : MonoBehaviour {
 #region commandesDebug
 
         if (Input.GetKeyDown(KeyCode.C))
-            UpdateMultiplier(true);
+            PlayerPrefs.DeleteAll();
 
         if (Input.GetKeyDown(KeyCode.LeftArrow))
             leftCarpe.Jump();
