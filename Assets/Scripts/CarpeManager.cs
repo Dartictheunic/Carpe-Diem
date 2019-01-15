@@ -60,6 +60,7 @@ public class CarpeManager : MonoBehaviour {
     float ObstaclesPassed;
     float percentageOfObstaclesPassed;
     bool end;
+    int difficultyManager;
 
 
     public void End()
@@ -133,6 +134,8 @@ public class CarpeManager : MonoBehaviour {
         {
             nbObstacles++;
         }
+        
+        difficultyManager = Gamemanager.gamemanager.difficulty + 1;
     }
 
 
@@ -314,7 +317,8 @@ public class CarpeManager : MonoBehaviour {
 
         else if (!increase)
         {
-            multiplier = 1;
+            Debug.Log(Mathf.Clamp((Mathf.Round(multiplier) / difficultyManager), 1, 8));
+            multiplier = Mathf.FloorToInt(Mathf.Clamp((Mathf.Round(multiplier) / difficultyManager), 1, 8)) ;
             multiplierText.UpdateMultiplier(multiplier);
             multiplierText.UpdateColor(multiplierColors[multiplier - 1]);
             styleInt = 0;
@@ -326,7 +330,7 @@ public class CarpeManager : MonoBehaviour {
     {
         if (multiplier < maximumMultiplier)
         {
-            styleInt += increase / (multiplier * 2);
+            styleInt += increase / ((Mathf.RoundToInt((multiplier * 2) / difficultyManager))+1);
 
             if (styleInt >= 100)
             {
