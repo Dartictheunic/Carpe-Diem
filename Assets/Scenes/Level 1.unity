@@ -32388,7 +32388,29 @@ Prefab:
       propertyPath: m_isInputParsingRequired
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 82116739819418588, guid: 82baf2d35af09b043839e6ef3426283c,
+        type: 2}
+      propertyPath: Mute
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 82844594864106750, guid: 82baf2d35af09b043839e6ef3426283c,
+        type: 2}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 82696046394657076, guid: 82baf2d35af09b043839e6ef3426283c,
+        type: 2}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114117353862193454, guid: 82baf2d35af09b043839e6ef3426283c,
+        type: 2}
+      propertyPath: multiplier
+      value: 0.8
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 114967302153475754, guid: 82baf2d35af09b043839e6ef3426283c, type: 2}
+    - {fileID: 114495950725900450, guid: 82baf2d35af09b043839e6ef3426283c, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 82baf2d35af09b043839e6ef3426283c, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &724509204

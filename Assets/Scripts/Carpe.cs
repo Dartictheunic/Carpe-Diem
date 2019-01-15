@@ -168,7 +168,7 @@ public class Carpe : MonoBehaviour {
                 if (hit.collider.GetComponent<Obstacles>() != null && hit.distance < styleDetectionDistance)
                 {
                     carpeManager.ObstaclePassed(hit.collider.GetComponent<Obstacles>().ObstacleValue);
-                    carpeManager.IncreaseScore(Mathf.FloorToInt(1 / hit.distance));
+                    carpeManager.IncreaseScore(Mathf.Clamp(Mathf.FloorToInt(1 / hit.distance), 0, 40));
                 }
 
             }
@@ -179,7 +179,7 @@ public class Carpe : MonoBehaviour {
             canJump = false;
 
 #if !UNITY_EDITOR
-                AndroidPlugin.StartVibrator(60);
+                AndroidPlugin.StartVibrator(40);
 #endif
         }
 
